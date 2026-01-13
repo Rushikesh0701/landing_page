@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { mockProducts } from '../../data/products';
-import { fetchProducts, formatPrice, isShopifyConfigured } from '../../lib/shopifyClient';
+import { fetchProducts, isShopifyConfigured } from '../../lib/shopifyClient';
 import ProductCard from './ProductCard';
 import styles from './Products.module.css';
 
@@ -20,25 +20,18 @@ import styles from './Products.module.css';
 function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isShopifyActive, setIsShopifyActive] = useState(false);
 
   useEffect(() => {
     loadProducts();
   }, []);
 
-  /**
-   * Load products from Shopify or use mock data as fallback
-   */
   async function loadProducts() {
     setLoading(true);
-    
-    // Check if Shopify is configured
     const shopifyEnabled = isShopifyConfigured();
-    setIsShopifyActive(shopifyEnabled);
 
     if (shopifyEnabled) {
       try {
-        const shopifyProducts = await fetchProducts(6);
+        const shopifyProducts = await fetchProducts(8);
         if (shopifyProducts && shopifyProducts.length > 0) {
           setProducts(shopifyProducts);
           setLoading(false);
@@ -49,42 +42,26 @@ function Products() {
       }
     }
 
-    // Use mock data as fallback
-    console.log('[Products] Using mock data as fallback');
-    setProducts(mockProducts.slice(0, 6));
+    setProducts(mockProducts.slice(0, 8));
     setLoading(false);
   }
 
   return (
     <section id="products" className={styles.products}>
       <div className={styles.container}>
-        {/* Section Header */}
         <div className={styles.header}>
-          <span className={styles.label}>Our Products</span>
-          <h2 className={styles.heading}>
-            Premium
-            <span className={styles.gradient}> Insulin Syringes</span>
-          </h2>
-          <p className={styles.subheading}>
-            FDA approved insulin syringes at the best prices in the nation. 
-            Quality you can trust, prices you can afford.
-          </p>
-          
-          {/* Integration Status Badge (dev only) */}
-          {import.meta.env.DEV && (
-            <div className={styles.statusBadge}>
-              <span className={isShopifyActive ? styles.statusActive : styles.statusInactive}>
-                {isShopifyActive ? '✓ Shopify Connected' : '○ Using Mock Data'}
-              </span>
-            </div>
-          )}
+          <div className={styles.titleWrapper}>
+            <h2 className={styles.heading}>Featured Products</h2>
+            <p className={styles.subheading}>Browse our selection of high-quality medical supplies at the best prices in the nation.</p>
+          </div>
+          <Link to="/products" className={styles.viewAllButton}>
+            View All Products →
+          </Link>
         </div>
 
-        {/* Products Grid */}
         {loading ? (
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>Loading products...</p>
           </div>
         ) : (
           <div className={styles.grid}>
@@ -92,19 +69,11 @@ function Products() {
               <ProductCard
                 key={product.id}
                 product={product}
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ animationDelay: `${index * 0.05}s` }}
               />
             ))}
           </div>
         )}
-
-        {/* View All Button */}
-        <div className={styles.viewAll}>
-          <Link to="/products" className={styles.viewAllButton}>
-            View All Products
-            <span className={styles.arrow}>→</span>
-          </Link>
-        </div>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
-import { Navbar, Footer, CartDrawer } from './components';
+import { TopBar, Navbar, Footer, CartDrawer } from './components';
 import { Home, ProductDetail, ProductsPage } from './pages';
 
 /**
@@ -16,7 +16,10 @@ function App() {
   return (
     <CartProvider>
       <Router>
-        <div className="app">
+        <div className="app" style={{ paddingTop: '100px' }}>
+          {/* Top Announcement Bar */}
+          <TopBar />
+          
           {/* Navigation */}
           <Navbar />
           

@@ -1,0 +1,91 @@
+.topBar {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: white;
+  font-size: 13px;
+  padding: 8px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Contact Info */
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.contactLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+  font-weight: 500;
+}
+
+.contactLink:hover {
+  opacity: 0.8;
+}
+
+.contactLink svg {
+  flex-shrink: 0;
+}
+
+/* Promo Message */
+.promo {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .topBar {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .contact {
+    gap: 16px;
+  }
+
+  .contactLink {
+    gap: 4px;
+  }
+
+  .contactLink svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .promo {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 640px) {
+  .contact a:last-child {
+    display: none;
+  }
+
+  .promo {
+    font-size: 10px;
+  }
+}

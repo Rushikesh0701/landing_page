@@ -6,23 +6,17 @@ import styles from './Navbar.module.css';
 /**
  * Navbar Component
  * 
- * Responsive navigation bar with logo, nav links, cart button, and CTA.
- * Features:
- * - Sticky positioning with blur effect on scroll
- * - Mobile hamburger menu
- * - Cart icon with item count
- * - Smooth scroll to sections on home page
+ * Clean, minimal navigation bar with logo, nav links, and cart button.
  */
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { itemCount, toggleCart } = useCart();
   const location = useLocation();
 
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -32,21 +26,15 @@ function Navbar() {
   // Navigation links
   const navLinks = [
     { href: '/', label: 'Home', isRoute: true },
-    { href: '#products', label: 'Products', isRoute: false },
+    { href: '/products', label: 'Products', isRoute: true },
     { href: '#about', label: 'About Us', isRoute: false },
-    { href: '#contact', label: 'Contact Us', isRoute: false },
+    { href: '#contact', label: 'Contact', isRoute: false },
   ];
 
-  // Handle smooth scroll for hash links
   const handleNavClick = (e, href, isRoute) => {
-    if (isRoute) {
-      setIsMobileMenuOpen(false);
-      return; // Let React Router handle it
-    }
+    if (isRoute) return;
 
     e.preventDefault();
-    
-    // If not on home page, navigate to home first
     if (location.pathname !== '/') {
       window.location.href = '/' + href;
       return;
@@ -55,42 +43,46 @@ function Navbar() {
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
     }
   };
 
   return (
     <header className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
-        {/* Logo Text */}
+        {/* Logo */}
         <Link to="/" className={styles.logo}>
-          <span className={styles.logoText}>Syringe Solutions</span>
+          <div className={styles.logoIcon}>💉</div>
+          <div className={styles.logoText}>
+            <span className={styles.brandName}>Syringe Solutions</span>
+            <span className={styles.tagline}>Best Prices Nationwide</span>
+          </div>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Navigation Links */}
         <nav className={styles.nav}>
-          <ul className={styles.navList}>
-            {navLinks.map((link) => (
-              <li key={link.href} className={styles.navItem}>
-                {link.isRoute ? (
-                  <Link to={link.href} className={styles.navLink}>
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    href={link.href}
-                    className={styles.navLink}
-                    onClick={(e) => handleNavClick(e, link.href, link.isRoute)}
-                  >
-                    {link.label}
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
+          {navLinks.map((link) => (
+            <div key={link.href}>
+              {link.isRoute ? (
+                <Link 
+                  to={link.href} 
+                  className={`${styles.navLink} ${location.pathname === link.href ? styles.active : ''}`}
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  href={link.href}
+                  className={styles.navLink}
+                  onClick={(e) => handleNavClick(e, link.href, link.isRoute)}
+                >
+                  {link.label}
+                </a>
+              )}
+            </div>
+          ))}
         </nav>
 
-        {/* Actions */}
+        {/* Right Actions */}
         <div className={styles.actions}>
           {/* Cart Button */}
           <button
@@ -98,71 +90,16 @@ function Navbar() {
             onClick={() => toggleCart(true)}
             aria-label="Open cart"
           >
-            <span className={styles.cartIcon}>🛒</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="9" cy="21" r="1"/>
+              <circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
             {itemCount > 0 && (
               <span className={styles.cartBadge}>{itemCount}</span>
             )}
           </button>
-
-          {/* CTA Button */}
-          <a
-            href="#products"
-            className={styles.ctaButton}
-            onClick={(e) => handleNavClick(e, '#products', false)}
-          >
-            Shop Now
-          </a>
         </div>
-
-        {/* Mobile Menu Toggle */}
-        <button
-          className={`${styles.mobileToggle} ${isMobileMenuOpen ? styles.active : ''}`}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle mobile menu"
-        >
-          <span className={styles.hamburger}></span>
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
-        <ul className={styles.mobileNavList}>
-          {navLinks.map((link) => (
-            <li key={link.href} className={styles.mobileNavItem}>
-              {link.isRoute ? (
-                <Link
-                  to={link.href}
-                  className={styles.mobileNavLink}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  href={link.href}
-                  className={styles.mobileNavLink}
-                  onClick={(e) => handleNavClick(e, link.href, link.isRoute)}
-                >
-                  {link.label}
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
-        {/* Mobile Cart Button */}
-        <button
-          className={styles.mobileCartButton}
-          onClick={() => { toggleCart(true); setIsMobileMenuOpen(false); }}
-        >
-          🛒 Cart {itemCount > 0 && `(${itemCount})`}
-        </button>
-        <a
-          href="#products"
-          className={styles.mobileCta}
-          onClick={(e) => handleNavClick(e, '#products', false)}
-        >
-          Shop Now
-        </a>
       </div>
     </header>
   );

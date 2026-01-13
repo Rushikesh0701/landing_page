@@ -12,26 +12,26 @@ function Footer() {
   const footerLinks = {
     products: [
       { label: 'Insulin Syringes', href: '#products' },
-      { label: 'Needles', href: '#' },
-      { label: 'Safety Syringes', href: '#' },
-      { label: 'Bulk Orders', href: '#' },
+      { label: 'Safety Needles', href: '#products' },
+      { label: 'IV Equipment', href: '#products' },
+      { label: 'All Products', href: '/products' },
     ],
     company: [
       { label: 'About Us', href: '#about' },
-      { label: 'Our Team', href: '#' },
+      { label: 'Quality Assurance', href: '#' },
       { label: 'Certifications', href: '#' },
       { label: 'Partners', href: '#' },
     ],
     support: [
       { label: 'Contact Us', href: '#contact' },
       { label: 'FAQs', href: '#' },
+      { label: 'Bulk Orders', href: '#' },
       { label: 'Shipping Info', href: '#' },
-      { label: 'Returns Policy', href: '#' },
     ],
     legal: [
       { label: 'Privacy Policy', href: '#' },
       { label: 'Terms of Service', href: '#' },
-      { label: 'Cookie Policy', href: '#' },
+      { label: 'HIPAA Compliance', href: '#' },
     ],
   };
 
@@ -49,12 +49,11 @@ function Footer() {
           {/* Brand Column */}
           <div className={styles.brandColumn}>
             <a href="#home" className={styles.logo}>
-              <span className={styles.logoIcon}>💉</span>
               <span className={styles.logoText}>Syringe Solutions</span>
             </a>
             <p className={styles.brandDescription}>
-              Your trusted partner for premium insulin syringes at unbeatable prices. 
-              Quality medical supplies for healthcare providers nationwide.
+              Your trusted partner in medical supplies. Providing healthcare providers 
+              with premium insulin syringes and medical equipment at competitive prices.
             </p>
             
             {/* Contact Info */}
@@ -120,9 +119,9 @@ function Footer() {
 
           {/* Newsletter Column */}
           <div className={styles.newsletterColumn}>
-            <h3 className={styles.columnTitle}>Get Updates</h3>
+            <h3 className={styles.columnTitle}>Newsletter</h3>
             <p className={styles.newsletterText}>
-              Subscribe for pricing updates and special offers.
+              Stay updated with our latest offers and products.
             </p>
             <form className={styles.newsletterForm} onSubmit={(e) => e.preventDefault()}>
               <input
@@ -159,8 +158,8 @@ function Footer() {
             ))}
           </div>
           <div className={styles.paymentMethods}>
-            <span className={styles.paymentIcon}>🏥</span>
-            <span className={styles.paymentText}>FDA Approved</span>
+            <span className={styles.paymentIcon}>🛡️</span>
+            <span className={styles.paymentText}>Secure Payments</span>
           </div>
         </div>
       </div>
