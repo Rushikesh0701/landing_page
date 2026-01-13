@@ -13,6 +13,7 @@ import styles from './ProductCard.module.css';
 function ProductCard({ product, style }) {
   const { addItem } = useCart();
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   
   const {
     title,
@@ -47,10 +48,28 @@ function ProductCard({ product, style }) {
     ? Math.round((1 - price / compareAtPrice) * 100)
     : null;
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product);
+    
+    setIsAdding(true);
+    
+    // Add item to cart with all required data
+    addItem({
+      id: product.id,
+      variantId: product.variantId,
+      title: product.title,
+      price: product.price,
+      currencyCode: product.currencyCode || 'USD',
+      image: product.image,
+      imageAlt: product.imageAlt || product.title,
+      handle: product.handle,
+    });
+    
+    // Brief delay for visual feedback
+    setTimeout(() => {
+      setIsAdding(false);
+    }, 500);
   };
 
   const toggleWishlist = (e) => {
@@ -98,9 +117,9 @@ function ProductCard({ product, style }) {
         <button
           className={styles.addToCartBtn}
           onClick={handleAddToCart}
-          disabled={!available}
+          disabled={!available || isAdding}
         >
-          {available ? 'Add to Cart' : 'Out of Stock'}
+          {isAdding ? '✓ Added!' : available ? 'Add to Cart' : 'Out of Stock'}
         </button>
       </div>
     </article>

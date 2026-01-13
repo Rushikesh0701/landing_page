@@ -52,7 +52,16 @@ function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product) {
-      addItem(product);
+      addItem({
+        id: product.id,
+        variantId: product.variantId,
+        title: product.title,
+        price: product.price,
+        currencyCode: product.currencyCode || 'USD',
+        image: product.image,
+        imageAlt: product.imageAlt || product.title,
+        handle: product.handle,
+      });
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2000);
     }

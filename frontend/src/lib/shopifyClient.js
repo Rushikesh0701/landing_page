@@ -156,25 +156,31 @@ export const PRODUCT_BY_HANDLE_QUERY = `
 `;
 
 /**
- * Mutation to create a checkout
+ * Mutation to create a cart (modern Shopify Cart API)
+ * Replaces the deprecated checkoutCreate mutation
  */
-export const CREATE_CHECKOUT_MUTATION = `
-  mutation CheckoutCreate($lineItems: [CheckoutLineItemInput!]!) {
-    checkoutCreate(input: { lineItems: $lineItems }) {
-      checkout {
+export const CREATE_CART_MUTATION = `
+  mutation CartCreate($lines: [CartLineInput!]!) {
+    cartCreate(input: { lines: $lines }) {
+      cart {
         id
-        webUrl
-        lineItems(first: 10) {
+        checkoutUrl
+        lines(first: 10) {
           edges {
             node {
-              title
+              id
               quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                }
+              }
             }
           }
         }
       }
-      checkoutUserErrors {
-        code
+      userErrors {
         field
         message
       }
@@ -256,25 +262,37 @@ export async function fetchProductByHandle(handle) {
 }
 
 /**
- * Create a Shopify checkout with the given items
+ * Create a Shopify cart and get checkout URL
+ * Uses the modern Cart API (replaces deprecated Checkout API)
  * 
  * @param {array} items - Array of { variantId, quantity } objects
- * @returns {Promise<object>} - Checkout object with webUrl for redirect
+ * @returns {Promise<object>} - Cart object with checkoutUrl for redirect
  */
 export async function createCheckout(items) {
   try {
-    const lineItems = items.map(item => ({
-      variantId: item.variantId,
+    // Transform items to Cart API format
+    const lines = items.map(item => ({
+      merchandiseId: item.variantId,
       quantity: item.quantity,
     }));
 
-    const data = await shopifyFetch(CREATE_CHECKOUT_MUTATION, { lineItems });
+    const data = await shopifyFetch(CREATE_CART_MUTATION, { lines });
 
-    if (data?.checkoutCreate?.checkoutUserErrors?.length > 0) {
-      throw new Error(data.checkoutCreate.checkoutUserErrors[0].message);
+    if (data?.cartCreate?.userErrors?.length > 0) {
+      throw new Error(data.cartCreate.userErrors[0].message);
     }
 
-    return data?.checkoutCreate?.checkout;
+    // Return cart with checkoutUrl (compatible with existing code expecting webUrl)
+    const cart = data?.cartCreate?.cart;
+    if (cart) {
+      return {
+        id: cart.id,
+        webUrl: cart.checkoutUrl, // Map checkoutUrl to webUrl for compatibility
+        checkoutUrl: cart.checkoutUrl,
+      };
+    }
+
+    return null;
   } catch (error) {
     console.error('[Shopify] Failed to create checkout:', error);
     return null;
